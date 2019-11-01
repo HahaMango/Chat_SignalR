@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>聊天窗口</title>
+        <link type="text/css" rel="styleSheet"  href="./bootstrap.min.css" />
+    </head>
+    <body>
+        用户名：<input id="username" type="text" name="username"/>
+        信息：<input id="message" type="text" name="message"/>
+        <input id="submit" type="button" value="发送"/>
+        <div>
+            <ul id="list">
+                <li>name:dfes</li>
+            </ul>
+        </div>
+        <button type="button" class="btn btn-success">Success</button>
+        <p id="app">{{message}}</p>
+        <script src="./signalr.js"></script>
+        <script src="./main.js"></script>
+    </body>
+</html>

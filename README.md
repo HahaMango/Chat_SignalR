@@ -11,7 +11,7 @@
 
 前端UI是用的`Vue.js`，配合`signalr.js`来做的跟服务器的实时通信。
 
-![ui界面](img/1.jpg)
+![ui界面](https://github.com/HahaMango/Chat_SignalR/blob/master/img/Demo.jpg)
 
 vue项目在web文件夹中。
 

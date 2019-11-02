@@ -5,7 +5,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 module.exports = {
     devtool: 'source-map',
     entry : {
-        uistyle :'./src/chatapp.js',
+        chatapp :'./src/chatapp.js',
     },
     output:{
         filename :"[name].js",

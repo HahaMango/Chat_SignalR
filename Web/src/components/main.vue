@@ -51,8 +51,9 @@ export default {
   computed:{
   },
   mounted: function() {
-    this.hashevent();
     p = this;
+    this.hashevent();
+    this.appclose();
   },
   methods: {
     hashevent: function() {
@@ -64,11 +65,20 @@ export default {
         p.currentRoute = window.location.hash;
       };
     },
+    appclose: function(){
+      window.onbeforeunload = function(){
+        var user = p.loginUser;
+        if(user == null){
+          return;
+        }
+        p.LogoutEvent(user);
+      };
+    },
     LoginEvent: function(value) {
       if (value == null) {
         return;
       }
-      /*
+      
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("POST","login",true);
       xmlhttp.send(value);
@@ -77,6 +87,10 @@ export default {
           if(xmlhttp.responseText == "OK"){
             signalr.Connect();
             signalr.RecevieCallBack(this.RecevieEvent);
+            signalr.OnClose(function(){
+              this.LogoutEvent();
+              window.location.href = "/";
+            });
             signalr.UserUpdate(this.UserUpdate);
             if(signalr.StartConnect(value)){
               this.loginUser = value;
@@ -84,10 +98,12 @@ export default {
             }
           }
         }
-      };
-      */
-      this.loginUser = value;
-      window.location.href = "#chat";
+      };    
+    },
+    LogoutEvent:function(value){
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("POST","logout",true);
+      xmlhttp.send(value);
     },
     SendAllEvent:function(value){
       value.date = new Date();

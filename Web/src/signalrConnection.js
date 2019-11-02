@@ -6,6 +6,9 @@ export default {
     Connect: function () {
         connection = new sr.HubConnectionBuilder().withUrl("https://localhost:5001/chat").build();
     },
+    OnClose : function(callback){
+        connection.onclose(callback);
+    },
     RecevieCallBack: function (callback) {
         connection.on("ReceiveMessage", callback);
     },

@@ -19,6 +19,11 @@ namespace SignalRDemo
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            .ConfigureLogging(log => 
+            {
+                log.ClearProviders();
+                log.AddConsole();
+            })
+            .UseStartup<Startup>();
     }
 }

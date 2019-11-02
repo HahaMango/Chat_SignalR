@@ -40,7 +40,7 @@ html body{
   background-color: rgb(243, 243, 243);
   border-style: solid;
   border-color: rgb(23, 162, 184);
-  border-width: 1px;
+  border-width: 2px;
   padding: 5px;
 }
 #messageinput input {
@@ -58,7 +58,7 @@ html body{
   background-color: rgb(243, 243, 243);
   border-style: solid;
   border-color: rgb(23, 162, 184);
-  border-width: 1px;
+  border-width: 2px;
   padding: 20px;
   overflow: auto;
 }
@@ -80,6 +80,7 @@ ul li {
 }
 .tabroot{
     margin-left: 15px;
+    height: 37px;
 }
 .btn {
     border-bottom-style: none;
@@ -114,22 +115,47 @@ ul li {
 }
 
 
+#userlist {
+  width: 100%;
+  height: 500px;
+  border-radius: 10px;
+  background-color: rgb(243, 243, 243);
+  border-style: solid;
+  border-color: rgb(23, 162, 184);
+  border-width: 2px;
+  padding: 5px;
+  overflow: auto;
+}
+#userlist button{
+    width: 100%;
+}
+#userlist li{
+    margin-top: 5px;
+}
+
+
 #chat_div {
   padding: 5px 0px 0px 0px;
   background-color: rgb(44, 44, 44);
 }
 .chatview1 {
-  width: 600px;
+  width: 500px;
 }
 .chatview2 {
-  width: 600px;
+  width: 500px;
+  margin-left: 40px;
+}
+.chatusers{
+  width: 150px;
   margin-left: 40px;
 }
 .allsend {
-  width: 600px;
   float: left;
 }
 .sigsend {
+  float: left;
+}
+.usersview{
   float: left;
 }
 .maincont {
@@ -139,4 +165,4 @@ ul li {
 }
 
 
-/*# sourceMappingURL=uistyle.css.map*/
+/*# sourceMappingURL=chatapp.css.map*/

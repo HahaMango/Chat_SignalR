@@ -17,7 +17,7 @@
             v-on:closetag="CloseTagEvent"
           />
         </div>
-        <div class="usersview">
+        <div class="usersview" v-on:click="UserUpdate">
           <userlist :users="userlist" class="chatusers" v-on:userlistclick="SelectUserEvent"/>
         </div>
       </div>
@@ -68,67 +68,86 @@ export default {
     appclose: function(){
       window.onbeforeunload = function(){
         var user = p.loginUser;
-        if(user == null){
-          return;
+        if(user != null && window.location.hash == "#chat"){
+          p.LogoutEvent(user);
         }
-        p.LogoutEvent(user);
       };
     },
     LoginEvent: function(value) {
-      if (value == null) {
+      if (value == null && value == "ALL") {
         return;
       }
       
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","login",true);
-      xmlhttp.send(value);
+      xmlhttp.open("POST","https://localhost:5001/login",true);
+      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+      xmlhttp.send("username="+ value);
       xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
           if(xmlhttp.responseText == "OK"){
             signalr.Connect();
-            signalr.RecevieCallBack(this.RecevieEvent);
+            signalr.RecevieCallBack(p.RecevieEvent);
             signalr.OnClose(function(){
-              this.LogoutEvent();
+              p.LogoutEvent(p.loginUser);
               window.location.href = "/";
             });
-            signalr.UserUpdate(this.UserUpdate);
-            if(signalr.StartConnect(value)){
-              this.loginUser = value;
+            signalr.StartConnect(value,function(){
+              p.loginUser = value;
               window.location.href = "#chat";
-            }
+            });
           }
         }
       };    
     },
     LogoutEvent:function(value){
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","logout",true);
-      xmlhttp.send(value);
+      xmlhttp.open("POST","https://localhost:5001/logout",false);
+      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+      xmlhttp.send("username="+value);
+      this.loginUser == null;
     },
     SendAllEvent:function(value){
-      value.date = new Date();
-      this.follow["广播聊天室"].push(value);
+      signalr.SendMsg("ALL",value.message,function(){
+        value.date = new Date();
+        p.follow["广播聊天室"].push(value);
+      });
     },
     SendMessageEvent: function(value) {
-      if(signalr.SendMsg(value.communicator,value.message)){
+      signalr.SendMsg(value.communicator,value.message,function(){
         value.date = new Date();
-        this.userMap[value.communicator].push(value);
-      }
+        p.userMap[value.communicator].push(value);
+      });
     },
-    RecevieEvent:function(username,msg){
+    RecevieEvent:function(username,msg,isAll){
       if(username == null || msg == null){
         return;
       }
-      var msglist = this.userMap[username];
-      if(msglist != null){
-        var chatRecord = new ChatRecord(username,msg,new Date(),false);
-        msglist.push(chatRecord);
+
+      if(isAll){
+        this.follow["广播聊天室"].push(new ChatRecord(username,msg,new Date(),false));
+      }else{
+        var msglist = this.userMap[username];
+        if(msglist != null){
+          var chatRecord = new ChatRecord(username,msg,new Date(),false);
+          msglist.push(chatRecord);
+        }
       }
     },
-    UserUpdate:function(users){
-      for(var user in users){
-        this.userlist.push(user);
-      }
+    UserUpdate:function(){
+      var xmlhttp1 = new XMLHttpRequest();
+      xmlhttp1.open("GET","https://localhost:5001/userlist/1/5",true);
+      xmlhttp1.send();
+      xmlhttp1.onreadystatechange = function(){
+        if(xmlhttp1.readyState == 4 && xmlhttp1.status == 200){
+          var users = eval(xmlhttp1.responseText);
+          for(var index in users){
+            var username = users[index];
+            if(username != p.loginUser){
+              p.userlist.push(username);
+            }
+          }
+        }
+      };
     },
     SelectUserEvent:function(user){
       if(user==null || this.userMap[user]!=null){

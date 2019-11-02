@@ -12,28 +12,22 @@ export default {
     RecevieCallBack: function (callback) {
         connection.on("ReceiveMessage", callback);
     },
-    SendMsg : function(username,msg){
-        connection.invoke("SendMessage",username,msg).catch(function(err){
-            console.log(err);
-            return false;
-        });
-        return true;
+    SendMsg : function(username,msg,successCallback){
+        connection.invoke("SendMessage",username,msg).then(successCallback);
     },
     UserUpdate:function(callback){
         connection.on("UserUpdate",callback);
     },
-    StartConnect: function (username) {
+    StartConnect: function (username ,successCallback) {
         connection.start().then(function () {
+            connection.invoke("AssociatedConnectId",username).catch(function(err){
+                return;
+            });
+            successCallback();
             console.log("已连接");
         }).catch(function(err){
             console.log(err);
-            return false;
+            return;
         });
-
-        connection.invoke("Identify",username).catch(function(err){
-            console.log(err);
-            return false;
-        });
-        return true;
     }
 }

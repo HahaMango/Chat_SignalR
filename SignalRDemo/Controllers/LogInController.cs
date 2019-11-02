@@ -19,7 +19,7 @@ namespace SignalRDemo.Controllers
 
         [Route("/login")]
         [HttpPost]
-        public async Task<ActionResult<string>> LogInAction(string username)
+        public async Task<ActionResult<string>> LogInAction([FromForm]string username)
         {
             bool isOk = await _accountService.AddAccountAsync(username);
             if (isOk)
@@ -34,7 +34,7 @@ namespace SignalRDemo.Controllers
 
         [Route("/logout")]
         [HttpPost]
-        public async Task<ActionResult<string>> LogOutAction(string username)
+        public async Task<ActionResult<string>> LogOutAction([FromForm]string username)
         {
             bool isOk = await _accountService.RemoveAccountAsync(username);
             if (isOk)
@@ -47,7 +47,7 @@ namespace SignalRDemo.Controllers
             }
         }
 
-        [Route("/userlist")]
+        [Route("/userlist/{page}/{count}")]
         [HttpGet]
         public async Task<IEnumerable<string>> UserList(int page,int count)
         {

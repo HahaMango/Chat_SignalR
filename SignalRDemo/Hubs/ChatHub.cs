@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using SignalRDemo.Srevice;
+using System.Collections.Generic;
 
 namespace SignalRDemo.Hubs
 {
@@ -27,10 +28,20 @@ namespace SignalRDemo.Hubs
         /// <param name="message"></param>
         /// <returns></returns>
         public async Task SendMessage(string username,string message)
-        {
-            string receiverConnectId = await _accountService.GetConnectIdAsync(username);
+        {       
             string senderUserName = await _accountService.GetUserNameByConnectId(Context.ConnectionId);
-            await Clients.Client(receiverConnectId).SendAsync("ReceiveMessage",senderUserName,message);
+            if (username != "ALL")
+            {
+                string receiverConnectId = await _accountService.GetConnectIdAsync(username);
+                await Clients.Client(receiverConnectId).SendAsync("ReceiveMessage", senderUserName, message,false);
+            }else
+            {
+                IReadOnlyList<string> sendIds = new List<string>()
+                {
+                    Context.ConnectionId
+                };
+                await Clients.AllExcept(sendIds).SendAsync("ReceiveMessage", senderUserName, message,true);
+            }
         }
 
         /// <summary>

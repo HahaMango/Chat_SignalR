@@ -38,7 +38,7 @@ namespace SignalRDemo.Srevice
             return await Task.Run(() => 
             {
                 var userlist = _userMapToId.Keys;
-                return userlist.Skip(page * count).Take(count);
+                return userlist.Skip((page - 1) * count).Take(count);
             });
         }
 
@@ -51,7 +51,7 @@ namespace SignalRDemo.Srevice
         {
             return await Task.Run(() => 
             {
-                if (_userMapToId.ContainsKey(username))
+                if (username == null || _userMapToId.ContainsKey(username))
                 {
                     return false;
                 }
@@ -121,7 +121,7 @@ namespace SignalRDemo.Srevice
         {
             return await Task.Run(()=>
             {
-                if (_userMapToId.ContainsKey(username))
+                if (username !=null && _userMapToId.ContainsKey(username))
                 {
                     string connectid = _userMapToId[username];
                     _userMapToId.Remove(username);

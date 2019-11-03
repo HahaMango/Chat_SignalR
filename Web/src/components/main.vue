@@ -17,8 +17,15 @@
             v-on:closetag="CloseTagEvent"
           />
         </div>
-        <div class="usersview" v-on:click="UserUpdate">
-          <userlist :users="userlist" class="chatusers" v-on:userlistclick="SelectUserEvent"/>
+        <div class="usersview">
+          <userlist 
+            :users="userlist" 
+            :loginUser="loginUser" 
+            class="chatusers" 
+            v-on:userlistclick="SelectUserEvent" 
+            v-on:scrolldown="ScrollUpdate"
+            v-on:refreshlist="RefreshUpdate"
+          />
         </div>
       </div>
     </div>
@@ -84,7 +91,6 @@ export default {
       xmlhttp.send("username="+ value);
       xmlhttp.onreadystatechange = function(){
         if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
-          if(xmlhttp.responseText == "OK"){
             signalr.Connect();
             signalr.RecevieCallBack(p.RecevieEvent);
             signalr.OnClose(function(){
@@ -95,7 +101,6 @@ export default {
               p.loginUser = value;
               window.location.href = "#chat";
             });
-          }
         }
       };    
     },
@@ -133,19 +138,34 @@ export default {
         }
       }
     },
-    UserUpdate:function(){
+    ScrollUpdate:function(page){
+      this.GetUserList(page,15,function(userlist){
+        for(var index in userlist){
+          var username = userlist[index];
+          if(username != p.loginUser){
+            p.userlist.push(username);
+          }
+        }
+      });
+    },
+    RefreshUpdate:function(){
+      this.GetUserList(1,15,function(userlist){
+        for(var index in userlist){
+          var username = userlist[index];
+          if(username != p.loginUser){
+            p.userlist.push(username);
+          }
+        }
+      });
+    },
+    GetUserList:function(page,count,resultCallBack){
       var xmlhttp1 = new XMLHttpRequest();
-      xmlhttp1.open("GET","https://localhost:5001/userlist/1/5",true);
+      xmlhttp1.open("GET","https://localhost:5001/userlist/"+page+"/"+count,true);
       xmlhttp1.send();
       xmlhttp1.onreadystatechange = function(){
         if(xmlhttp1.readyState == 4 && xmlhttp1.status == 200){
-          var users = eval(xmlhttp1.responseText);
-          for(var index in users){
-            var username = users[index];
-            if(username != p.loginUser){
-              p.userlist.push(username);
-            }
-          }
+           var userlist = eval(xmlhttp1.responseText);
+           resultCallBack(userlist);
         }
       };
     },

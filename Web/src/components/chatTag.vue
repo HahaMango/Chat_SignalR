@@ -62,15 +62,15 @@ export default {
     height: 37px;
 }
 
-.btn {
+.tabroot .btn {
     border-bottom-style: none;
 }
 
-.btn-group .btn:first-child{
+.tabroot .btn:first-child{
     border-bottom-left-radius: 0;
 }
 
-.btn-group .btn:last-child{
+.tabroot .btn:last-child{
     border-bottom-right-radius: 0;
 }
 </style>

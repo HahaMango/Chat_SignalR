@@ -9,7 +9,6 @@ namespace SignalRDemo.Controllers
     [ApiController]
     public class LogInController : ControllerBase
     {
-
         private readonly IAccountService _accountService = null;
 
         public LogInController(IAccountService accountService)
@@ -24,11 +23,11 @@ namespace SignalRDemo.Controllers
             bool isOk = await _accountService.AddAccountAsync(username);
             if (isOk)
             {
-                return "OK";
+                return Ok();
             }
             else
             {
-                return "FAIL";
+                return NotFound();
             }
         }
 
@@ -39,11 +38,11 @@ namespace SignalRDemo.Controllers
             bool isOk = await _accountService.RemoveAccountAsync(username);
             if (isOk)
             {
-                return "OK";
+                return Ok();
             }
             else
             {
-                return "FAIL";
+                return NotFound();
             }
         }
 

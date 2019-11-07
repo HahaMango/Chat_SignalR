@@ -14,7 +14,7 @@
         </button>
       </button>
     </div>
-    <chatview :chatrecords="getrecord" :sendname="loginuser" v-on:sendmsg="getRecordObject"/>
+    <chatview class="chat_view" :chatrecords="getrecord" :sendname="loginuser" v-on:sendmsg="getRecordObject"/>
   </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   props: ["userMap","loginuser"],
   data () {
       return {
-          currentTab:'广播聊天室',
+        currentTab:'广播聊天室',
       }
   },
   methods:{
@@ -72,5 +72,9 @@ export default {
 
 .tabroot .btn:last-child{
     border-bottom-right-radius: 0;
+}
+
+.chat_view{
+  height: 100%;
 }
 </style>

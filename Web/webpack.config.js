@@ -3,7 +3,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-    devtool: 'source-map',
     entry : {
         chatapp :'./src/chatapp.js',
     },

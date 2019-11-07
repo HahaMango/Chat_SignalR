@@ -44,9 +44,8 @@ export default {
       var clientheight = scrollelement.clientHeight;
       var scrollheight = scrollelement.children[0].scrollHeight;
       var scrolltop = scrollelement.scrollTop;
-      var page = (scrollheight/clientheight) + 1;
       if(scrollheight - clientheight - scrolltop <= 20){
-        this.$emit('scrolldown',parseInt(page));
+        this.$emit('scrolldown');
       }
     }
   }
@@ -56,7 +55,7 @@ export default {
 <style>
 #userlist {
   width: 100%;
-  height: 500px;
+  height: 100%;
   border-radius: 10px;
   background-color: rgb(243, 243, 243);
   border-style: solid;

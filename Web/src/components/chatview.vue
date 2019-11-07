@@ -55,6 +55,7 @@ data (){
   border-color: rgb(23, 162, 184);
   border-width: 2px;
   padding: 5px;
+  height: 50px;
 }
 
 #messageinput input {
@@ -69,7 +70,7 @@ data (){
 
 #chatlist {
   width: 100%;
-  height: 500px;
+  height: 100%;
   border-radius: 10px;
   background-color: rgb(243, 243, 243);
   border-style: solid;

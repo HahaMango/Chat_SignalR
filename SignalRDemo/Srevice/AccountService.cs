@@ -20,23 +20,23 @@ namespace SignalRDemo.Srevice
             _userMapToId.Add("c", null);
             _userMapToId.Add("d", null);
             _userMapToId.Add("e", null);
-            _userMapToId.Add("f", null);
-            _userMapToId.Add("g", null);
-            _userMapToId.Add("h", null);
-            _userMapToId.Add("i", null);
-            _userMapToId.Add("j", null);
-            _userMapToId.Add("k", null);
-            _userMapToId.Add("l", null);
-            _userMapToId.Add("m", null);
-            _userMapToId.Add("n", null);
-            _userMapToId.Add("o", null);
-            _userMapToId.Add("p", null);
-            _userMapToId.Add("q", null);
-            _userMapToId.Add("r", null);
-            _userMapToId.Add("s", null);
-            _userMapToId.Add("t", null);
-            _userMapToId.Add("x", null);
-            _userMapToId.Add("z", null);
+            //_userMapToId.Add("f", null);
+            //_userMapToId.Add("g", null);
+            //_userMapToId.Add("h", null);
+            //_userMapToId.Add("i", null);
+            //_userMapToId.Add("j", null);
+            //_userMapToId.Add("k", null);
+            //_userMapToId.Add("l", null);
+            //_userMapToId.Add("m", null);
+            //_userMapToId.Add("n", null);
+            //_userMapToId.Add("o", null);
+            //_userMapToId.Add("p", null);
+            //_userMapToId.Add("q", null);
+            //_userMapToId.Add("r", null);
+            //_userMapToId.Add("s", null);
+            //_userMapToId.Add("t", null);
+            //_userMapToId.Add("x", null);
+            //_userMapToId.Add("z", null);
             _idMapToUser = new ConcurrentDictionary<string, string>();
         }
 
@@ -60,7 +60,7 @@ namespace SignalRDemo.Srevice
             return await Task.Run(() => 
             {
                 var userlist = _userMapToId.Keys;
-                return userlist.Skip((page - 1) * count).Take(count);
+                return userlist.Skip(page).Take(count);
             });
         }
 

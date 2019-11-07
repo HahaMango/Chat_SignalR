@@ -4,7 +4,7 @@
       <loginview v-on:loginclick="LoginEvent" />
     </div>
     <div id="chat_div" v-if="currentRoute === '#chat'">
-      <div class="maincont">
+      <div id="maincont" v-bind:style="{height: maincontHeight + 'px'}">
         <div class="allsend">
           <chattag :userMap="follow" class="chatview1" :loginuser="loginUser" v-on:sendrecord="SendAllEvent"/>
         </div>
@@ -27,6 +27,12 @@
             v-on:refreshlist="RefreshUpdate"
           />
         </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div class="center">
+        <a href="https://github.com/HahaMango/Chat_SignalR" target="_blank"><img src="githubico.png"/></a>
+        <span><i>power by .NET Core / Vue.js</i></span>
       </div>
     </div>
   </div>
@@ -52,10 +58,14 @@ export default {
         "广播聊天室": [
         ]
       },
-      userlist:[]
+      userlist:[],
     };
   },
   computed:{
+    maincontHeight:function(){
+      var clientHeight = document.documentElement.clientHeight;
+      return clientHeight - 170;
+    }
   },
   mounted: function() {
     p = this;
@@ -81,6 +91,9 @@ export default {
       };
     },
     LoginEvent: function(value) {
+      //window.alert("即将上线,敬请期待");
+      //return;
+
       if (value == null && value == "ALL") {
         return;
       }
@@ -105,11 +118,13 @@ export default {
       };    
     },
     LogoutEvent:function(value){
+      
       var xmlhttp = new XMLHttpRequest();
       xmlhttp.open("POST","https://localhost:5001/logout",false);
       xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
       xmlhttp.send("username="+value);
       this.loginUser == null;
+
     },
     SendAllEvent:function(value){
       signalr.SendMsg("ALL",value.message,function(){
@@ -138,23 +153,21 @@ export default {
         }
       }
     },
-    ScrollUpdate:function(page){
-      this.GetUserList(page,15,function(userlist){
+    ScrollUpdate:function(){
+      var userlistcount = this.userlist.length;
+      this.GetUserList(userlistcount,10,function(userlist){
         for(var index in userlist){
           var username = userlist[index];
-          if(username != p.loginUser){
-            p.userlist.push(username);
-          }
+          p.userlist.push(username);
         }
       });
     },
     RefreshUpdate:function(){
-      this.GetUserList(1,15,function(userlist){
+      var userlistcount = this.userlist.length;
+      this.GetUserList(userlistcount,10,function(userlist){
         for(var index in userlist){
           var username = userlist[index];
-          if(username != p.loginUser){
-            p.userlist.push(username);
-          }
+          p.userlist.push(username);
         }
       });
     },
@@ -164,8 +177,8 @@ export default {
       xmlhttp1.send();
       xmlhttp1.onreadystatechange = function(){
         if(xmlhttp1.readyState == 4 && xmlhttp1.status == 200){
-           var userlist = eval(xmlhttp1.responseText);
-           resultCallBack(userlist);
+          var userlist = eval(xmlhttp1.responseText);
+          resultCallBack(userlist);
         }
       };
     },
@@ -200,33 +213,51 @@ export default {
 
 .chatview1 {
   width: 500px;
+  height: 100%;
 }
 
 .chatview2 {
   width: 500px;
   margin-left: 40px;
+  height: 100%;
 }
 
 .chatusers{
   width: 150px;
   margin-left: 40px;
+  height: 100%;
 }
 
 .allsend {
   float: left;
+  height: 100%;
 }
 
 .sigsend {
   float: left;
+  height: 100%;
 }
 
 .usersview{
   float: left;
+  height: 100%;
 }
 
-.maincont {
+#maincont {
   margin: 0px auto 0px auto;
   width: 1300px;
   padding: 20px;
+  margin-bottom: 90px;
+}
+
+#footer .center{
+  width: 250px;
+  margin: 0px auto 0px auto;
+}
+
+#footer .center span{
+  display: inline-block;
+  margin: 10px;
+  color: gray;
 }
 </style>

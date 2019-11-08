@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div id="head">
+      <div id="title_div">
+        <b><span>FlashChat</span></b>
+        <span>{{loginUser}}</span>
+      </div>
+    </div>
     <div id="login" v-if="currentRoute === ''">
       <loginview v-on:loginclick="LoginEvent" />
     </div>
@@ -20,7 +26,6 @@
         <div class="usersview">
           <userlist 
             :users="userlist" 
-            :loginUser="loginUser" 
             class="chatusers" 
             v-on:userlistclick="SelectUserEvent" 
             v-on:scrolldown="ScrollUpdate"
@@ -64,7 +69,16 @@ export default {
   computed:{
     maincontHeight:function(){
       var clientHeight = document.documentElement.clientHeight;
-      return clientHeight - 170;
+      return clientHeight - 270;
+    },
+    titleWidth:function(){
+      var clientWidth = document.documentElement.clientWidth;
+
+      return clientWidth - 400;
+    },
+    chatviewWidth:function(){
+      var width = (this.titleWidth - 230)/2;
+      return width;
     }
   },
   mounted: function() {
@@ -93,7 +107,6 @@ export default {
     LoginEvent: function(value) {
       //window.alert("即将上线,敬请期待");
       //return;
-
       if (value == null && value == "ALL") {
         return;
       }
@@ -147,9 +160,11 @@ export default {
         this.follow["广播聊天室"].push(new ChatRecord(username,msg,new Date(),false));
       }else{
         var msglist = this.userMap[username];
+        var chatRecord = new ChatRecord(username,msg,new Date(),false);
         if(msglist != null){
-          var chatRecord = new ChatRecord(username,msg,new Date(),false);
           msglist.push(chatRecord);
+        }else if(msglist == null){
+          this.$set(this.userMap,username,[chatRecord]);
         }
       }
     },
@@ -183,7 +198,7 @@ export default {
       };
     },
     SelectUserEvent:function(user){
-      if(user==null || this.userMap[user]!=null){
+      if(user==null || this.userMap[user]!=null || this.loginUser == user){
         return;
       }
       this.$set(this.userMap,user,[]);
@@ -212,41 +227,46 @@ export default {
 }
 
 .chatview1 {
-  width: 500px;
+  /*width: 400px;*/
   height: 100%;
 }
 
 .chatview2 {
-  width: 500px;
-  margin-left: 40px;
+  /*width: 400px;*/
+  /*margin-left: 40px;*/
   height: 100%;
 }
 
 .chatusers{
-  width: 150px;
-  margin-left: 40px;
+  /*width: 150px;*/
+  /*margin-left: 40px;*/
   height: 100%;
 }
 
 .allsend {
   float: left;
   height: 100%;
+  width: 40%;
 }
 
 .sigsend {
   float: left;
   height: 100%;
+  width: 40%;
+  margin-left: 3%;
 }
 
 .usersview{
   float: left;
   height: 100%;
+  width: 14%;
+  margin-left: 3%;
 }
 
 #maincont {
-  margin: 0px auto 0px auto;
-  width: 1300px;
-  padding: 20px;
+  margin: 0px 100px 0px 100px;
+  /*width: 1100px*/
+  padding: 5px 10px 20px 10px;
   margin-bottom: 90px;
 }
 
@@ -259,5 +279,26 @@ export default {
   display: inline-block;
   margin: 10px;
   color: gray;
+}
+
+#title_div{
+  padding: 10px 10px 10px 10px;
+  height: 56.8px;
+  color: rgb(23, 162, 184);
+  margin:20px 100px 20px 100px;
+  background-color: rgba(23, 162, 184,0.33);
+  border-radius: 5px;
+  box-shadow: 0px 4px 24px #121212; 
+}
+
+#title_div > b{
+  margin-left: 30px;
+  font-size: 25px;
+  float: left;
+}
+
+#title_div > span{
+  padding-top: 12px;
+  float: right;
 }
 </style>

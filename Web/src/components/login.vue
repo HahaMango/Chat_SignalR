@@ -32,7 +32,7 @@ export default {
 
 <style>
 .head_div{
-    height: 200px;
+    height: 100px;
 }
 
 .namelabel{

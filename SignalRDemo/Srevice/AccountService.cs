@@ -15,11 +15,11 @@ namespace SignalRDemo.Srevice
         public AccountService()
         {
             _userMapToId = new ConcurrentDictionary<string, string>();
-            _userMapToId.Add("a", null);
-            _userMapToId.Add("b", null);
-            _userMapToId.Add("c", null);
-            _userMapToId.Add("d", null);
-            _userMapToId.Add("e", null);
+            //_userMapToId.Add("a", null);
+            //_userMapToId.Add("b", null);
+            //_userMapToId.Add("c", null);
+            //_userMapToId.Add("d", null);
+            //_userMapToId.Add("e", null);
             //_userMapToId.Add("f", null);
             //_userMapToId.Add("g", null);
             //_userMapToId.Add("h", null);

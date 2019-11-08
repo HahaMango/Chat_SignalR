@@ -9,7 +9,7 @@
     </div>
     <div id="messageinput">
       <div>
-        <input type="text" class="form-control" placeholder="请输入..." v-model="message"/>
+        <input type="text" class="form-control" placeholder="请输入..." v-model="message" v-on:keyup.enter="getRecordObject"/>
         <button type="button" class="btn btn-success" v-on:click="getRecordObject">发送</button>
       </div>
     </div>

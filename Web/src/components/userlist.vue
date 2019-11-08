@@ -3,9 +3,6 @@
     <div style="height:37px;"></div>
     <div id="userlist" v-on:scroll="ScrollBlowEvent">
       <ul>
-        <li>
-          <button type="button" class="btn btn-info" disabled="disabled">{{loginUser}}</button>
-        </li>
         <li v-for="user in users" :key="user">
             <button type="button" class="btn btn-outline-info" v-on:click ="$emit('userlistclick',user)">{{user}}</button>
         </li>
@@ -22,10 +19,10 @@ export default {
     return {
     };
   },
-  props: ["users","loginUser"],
+  props: ["users"],
   mounted : function(){
     p = this;
-    window.setTimeout(function(){
+    window.setInterval(function(){
       var scrollelement = document.getElementById("userlist");
       var clientheight = scrollelement.clientHeight;
       var scrollheight = scrollelement.children[0].scrollHeight;

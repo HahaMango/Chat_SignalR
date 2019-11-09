@@ -4,7 +4,7 @@ let connection = null;
 
 export default {
     Connect: function () {
-        connection = new sr.HubConnectionBuilder().withUrl("https://localhost:5001/chat").build();
+        connection = new sr.HubConnectionBuilder().withUrl("/api/chat").build();
     },
     OnClose : function(callback){
         connection.onclose(callback);

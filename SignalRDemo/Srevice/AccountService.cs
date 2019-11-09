@@ -15,28 +15,6 @@ namespace SignalRDemo.Srevice
         public AccountService()
         {
             _userMapToId = new ConcurrentDictionary<string, string>();
-            //_userMapToId.Add("a", null);
-            //_userMapToId.Add("b", null);
-            //_userMapToId.Add("c", null);
-            //_userMapToId.Add("d", null);
-            //_userMapToId.Add("e", null);
-            //_userMapToId.Add("f", null);
-            //_userMapToId.Add("g", null);
-            //_userMapToId.Add("h", null);
-            //_userMapToId.Add("i", null);
-            //_userMapToId.Add("j", null);
-            //_userMapToId.Add("k", null);
-            //_userMapToId.Add("l", null);
-            //_userMapToId.Add("m", null);
-            //_userMapToId.Add("n", null);
-            //_userMapToId.Add("o", null);
-            //_userMapToId.Add("p", null);
-            //_userMapToId.Add("q", null);
-            //_userMapToId.Add("r", null);
-            //_userMapToId.Add("s", null);
-            //_userMapToId.Add("t", null);
-            //_userMapToId.Add("x", null);
-            //_userMapToId.Add("z", null);
             _idMapToUser = new ConcurrentDictionary<string, string>();
         }
 
@@ -103,6 +81,15 @@ namespace SignalRDemo.Srevice
         }
 
         /// <summary>
+        /// 返回当前登陆总数
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> Count()
+        {
+            return await Task.Run(() => _userMapToId.Count);
+        }
+
+        /// <summary>
         /// 检查账号是否存在
         /// </summary>
         /// <param name="username"></param>
@@ -123,7 +110,7 @@ namespace SignalRDemo.Srevice
             {
                 if (!_userMapToId.ContainsKey(username))
                 {
-                    throw new ApplicationException();
+                    throw new ApplicationException($"不存在“{username}”");
                 }
                 return _userMapToId[username];
             });

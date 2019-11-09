@@ -107,12 +107,12 @@ export default {
     LoginEvent: function(value) {
       //window.alert("即将上线,敬请期待");
       //return;
-      if (value == null && value == "ALL") {
+      if (value == null && value == "ALL" && value == "SYSTEM") {
         return;
       }
       
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","https://localhost:5001/login",true);
+      xmlhttp.open("POST","/api/login",true);
       xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
       xmlhttp.send("username="+ value);
       xmlhttp.onreadystatechange = function(){
@@ -133,7 +133,7 @@ export default {
     LogoutEvent:function(value){
       
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","https://localhost:5001/logout",false);
+      xmlhttp.open("POST","/api/logout",false);
       xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
       xmlhttp.send("username="+value);
       this.loginUser == null;
@@ -155,7 +155,10 @@ export default {
       if(username == null || msg == null){
         return;
       }
-
+      if(username == "SYSTEM"){
+        window.alert(msg);
+        return;
+      }
       if(isAll){
         this.follow["广播聊天室"].push(new ChatRecord(username,msg,new Date(),false));
       }else{
@@ -188,7 +191,7 @@ export default {
     },
     GetUserList:function(page,count,resultCallBack){
       var xmlhttp1 = new XMLHttpRequest();
-      xmlhttp1.open("GET","https://localhost:5001/userlist/"+page+"/"+count,true);
+      xmlhttp1.open("GET","/api/userlist/"+page+"/"+count,true);
       xmlhttp1.send();
       xmlhttp1.onreadystatechange = function(){
         if(xmlhttp1.readyState == 4 && xmlhttp1.status == 200){

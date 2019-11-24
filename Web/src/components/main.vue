@@ -2,7 +2,9 @@
   <div>
     <div id="head">
       <div id="title_div">
-        <b><span>FlashChat</span></b>
+        <b>
+          <span>FlashChat</span>
+        </b>
         <span>{{loginUser}}</span>
       </div>
     </div>
@@ -12,7 +14,12 @@
     <div id="chat_div" v-if="currentRoute === '#chat'">
       <div id="maincont" v-bind:style="{height: maincontHeight + 'px'}">
         <div class="allsend">
-          <chattag :userMap="follow" class="chatview1" :loginuser="loginUser" v-on:sendrecord="SendAllEvent"/>
+          <chattag
+            :userMap="follow"
+            class="chatview1"
+            :loginuser="loginUser"
+            v-on:sendrecord="SendAllEvent"
+          />
         </div>
         <div class="sigsend">
           <chattag
@@ -24,10 +31,10 @@
           />
         </div>
         <div class="usersview">
-          <userlist 
-            :users="userlist" 
-            class="chatusers" 
-            v-on:userlistclick="SelectUserEvent" 
+          <userlist
+            :users="userlist"
+            class="chatusers"
+            v-on:userlistclick="SelectUserEvent"
             v-on:scrolldown="ScrollUpdate"
             v-on:refreshlist="RefreshUpdate"
           />
@@ -36,8 +43,12 @@
     </div>
     <div id="footer">
       <div class="center">
-        <a href="https://github.com/HahaMango/Chat_SignalR" target="_blank"><img src="githubico.png"/></a>
-        <span><i>power by .NET Core / Vue.js</i></span>
+        <a href="https://github.com/HahaMango/Chat_SignalR" target="_blank">
+          <img src="githubico.png" />
+        </a>
+        <span>
+          <i>power by .NET Core / Vue.js</i>
+        </span>
       </div>
     </div>
   </div>
@@ -46,9 +57,9 @@
 <script>
 import chattag from "./chatTag.vue";
 import loginview from "./login.vue";
-import userlist from './userlist.vue'
+import userlist from "./userlist.vue";
 import ChatRecord from "../ChatRecord.js";
-import signalr from '../signalrConnection.js';
+import signalr from "../signalrConnection.js";
 
 let p = null;
 
@@ -57,27 +68,24 @@ export default {
     return {
       currentRoute: window.location.hash,
       loginUser: null,
-      userMap: {
-      },
+      userMap: {},
       follow: {
-        "广播聊天室": [
-        ]
+        广播聊天室: []
       },
-      userlist:[],
+      userlist: []
     };
   },
-  computed:{
-    maincontHeight:function(){
+  computed: {
+    maincontHeight: function() {
       var clientHeight = document.documentElement.clientHeight;
       return clientHeight - 270;
     },
-    titleWidth:function(){
+    titleWidth: function() {
       var clientWidth = document.documentElement.clientWidth;
-
       return clientWidth - 400;
     },
-    chatviewWidth:function(){
-      var width = (this.titleWidth - 230)/2;
+    chatviewWidth: function() {
+      var width = (this.titleWidth - 230) / 2;
       return width;
     }
   },
@@ -96,121 +104,127 @@ export default {
         p.currentRoute = window.location.hash;
       };
     },
-    appclose: function(){
-      window.onbeforeunload = function(){
+    appclose: function() {
+      window.onbeforeunload = function() {
         var user = p.loginUser;
-        if(user != null && window.location.hash == "#chat"){
+        if (user != null && window.location.hash == "#chat") {
           p.LogoutEvent(user);
         }
       };
     },
     LoginEvent: function(value) {
-      //window.alert("即将上线,敬请期待");
-      //return;
-      if (value == null && value == "ALL" && value == "SYSTEM") {
+      if (value == null && value == "广播聊天室" && value == "SYSTEM") {
         return;
       }
-      
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","/api/login",true);
-      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-      xmlhttp.send("username="+ value);
-      xmlhttp.onreadystatechange = function(){
-        if(xmlhttp.readyState == 4 && xmlhttp.status == 200){
-            signalr.Connect();
-            signalr.RecevieCallBack(p.RecevieEvent);
-            signalr.OnClose(function(){
-              p.LogoutEvent(p.loginUser);
-              window.location.href = "/";
-            });
-            signalr.StartConnect(value,function(){
-              p.loginUser = value;
-              window.location.href = "#chat";
-            });
-        }
-      };    
-    },
-    LogoutEvent:function(value){
-      
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST","/api/logout",false);
-      xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-      xmlhttp.send("username="+value);
-      this.loginUser == null;
 
+      signalr.Connect();
+      signalr.RecevieCallBack(p.RecevieEvent);
+      signalr.OnClose(function() {
+        p.LogoutEvent(p.loginUser);
+        window.location.href = "/";
+      });
+      signalr.StartConnect(value, function() {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", "/api/login", true);
+        xmlhttp.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        xmlhttp.send("username=" + value);
+        xmlhttp.onreadystatechange = function() {
+          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            p.loginUser = value;
+            window.location.href = "#chat";
+          }
+        };
+      });
     },
-    SendAllEvent:function(value){
-      signalr.SendMsg("ALL",value.message,function(){
+
+    LogoutEvent: function(value) {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("POST", "/api/logout", false);
+      xmlhttp.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+      xmlhttp.send("username=" + value);
+      this.loginUser == null;
+    },
+    SendAllEvent: function(value) {
+      signalr.SendMsg(value, function() {
         value.date = new Date();
         p.follow["广播聊天室"].push(value);
       });
     },
     SendMessageEvent: function(value) {
-      signalr.SendMsg(value.communicator,value.message,function(){
+      signalr.SendMsg(value, function() {
         value.date = new Date();
-        p.userMap[value.communicator].push(value);
+        p.userMap[value.receiver].push(value);
       });
     },
-    RecevieEvent:function(username,msg,isAll){
-      if(username == null || msg == null){
+    RecevieEvent: function(chatRecord) {
+      if (chatRecord == null) {
         return;
       }
-      if(username == "SYSTEM"){
-        window.alert(msg);
+      if (chatRecord.sender == "SYSTEM") {
+        window.alert(chatRecord.message);
         return;
       }
-      if(isAll){
-        this.follow["广播聊天室"].push(new ChatRecord(username,msg,new Date(),false));
-      }else{
-        var msglist = this.userMap[username];
-        var chatRecord = new ChatRecord(username,msg,new Date(),false);
-        if(msglist != null){
+      if (chatRecord.receiver == "广播聊天室") {
+        this.follow["广播聊天室"].push(chatRecord);
+      } else {
+        var msglist = this.userMap[receiver];
+        if (msglist != null) {
           msglist.push(chatRecord);
-        }else if(msglist == null){
-          this.$set(this.userMap,username,[chatRecord]);
+        } else if (msglist == null) {
+          this.$set(this.userMap, chatRecord.sender, [chatRecord]);
         }
       }
     },
-    ScrollUpdate:function(){
+    ScrollUpdate: function() {
       var userlistcount = this.userlist.length;
-      this.GetUserList(userlistcount,10,function(userlist){
-        for(var index in userlist){
+      this.GetUserList(userlistcount, 10, function(userlist) {
+        for (var index in userlist) {
           var username = userlist[index];
           p.userlist.push(username);
         }
       });
     },
-    RefreshUpdate:function(){
+    RefreshUpdate: function() {
       var userlistcount = this.userlist.length;
-      this.GetUserList(userlistcount,10,function(userlist){
-        for(var index in userlist){
+      this.GetUserList(userlistcount, 10, function(userlist) {
+        for (var index in userlist) {
           var username = userlist[index];
           p.userlist.push(username);
         }
       });
     },
-    GetUserList:function(page,count,resultCallBack){
+    GetUserList: function(page, count, resultCallBack) {
       var xmlhttp1 = new XMLHttpRequest();
-      xmlhttp1.open("GET","/api/userlist/"+page+"/"+count,true);
+      xmlhttp1.open("GET", "/api/userlist/" + page + "/" + count, true);
       xmlhttp1.send();
-      xmlhttp1.onreadystatechange = function(){
-        if(xmlhttp1.readyState == 4 && xmlhttp1.status == 200){
+      xmlhttp1.onreadystatechange = function() {
+        if (xmlhttp1.readyState == 4 && xmlhttp1.status == 200) {
           var userlist = eval(xmlhttp1.responseText);
           resultCallBack(userlist);
         }
       };
     },
-    SelectUserEvent:function(user){
-      if(user==null || this.userMap[user]!=null || this.loginUser == user){
+    SelectUserEvent: function(user) {
+      if (
+        user == null ||
+        this.userMap[user] != null ||
+        this.loginUser == user
+      ) {
         return;
       }
-      this.$set(this.userMap,user,[]);
+      this.$set(this.userMap, user, []);
     },
-    CloseTagEvent:function(user){
-      if(user==null){
+    CloseTagEvent: function(user) {
+      if (user == null) {
         return;
       }
-      this.$delete(this.userMap,user); 
+      this.$delete(this.userMap, user);
     }
   },
   components: {
@@ -219,8 +233,6 @@ export default {
     userlist
   }
 };
-
-
 </script>>
 
 <style>
@@ -240,7 +252,7 @@ export default {
   height: 100%;
 }
 
-.chatusers{
+.chatusers {
   /*width: 150px;*/
   /*margin-left: 40px;*/
   height: 100%;
@@ -259,7 +271,7 @@ export default {
   margin-left: 3%;
 }
 
-.usersview{
+.usersview {
   float: left;
   height: 100%;
   width: 14%;
@@ -273,34 +285,34 @@ export default {
   margin-bottom: 90px;
 }
 
-#footer .center{
+#footer .center {
   width: 250px;
   margin: 0px auto 0px auto;
 }
 
-#footer .center span{
+#footer .center span {
   display: inline-block;
   margin: 10px;
   color: gray;
 }
 
-#title_div{
+#title_div {
   padding: 10px 10px 10px 10px;
   height: 56.8px;
   color: rgb(23, 162, 184);
-  margin:20px 100px 20px 100px;
-  background-color: rgba(23, 162, 184,0.33);
+  margin: 20px 100px 20px 100px;
+  background-color: rgba(23, 162, 184, 0.33);
   border-radius: 5px;
-  box-shadow: 0px 4px 24px #121212; 
+  box-shadow: 0px 4px 24px #121212;
 }
 
-#title_div > b{
+#title_div > b {
   margin-left: 30px;
   font-size: 25px;
   float: left;
 }
 
-#title_div > span{
+#title_div > span {
   padding-top: 12px;
   float: right;
 }

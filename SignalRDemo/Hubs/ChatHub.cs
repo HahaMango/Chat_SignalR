@@ -28,30 +28,30 @@ namespace SignalRDemo.Hubs
         /// <param name="username"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task SendMessage(string username, string message)
+        public async Task SendMessage(string sender,string receiver, string message)
         {
             try
             {
-                string senderUserName = null;
-                string receiverConnectId = null;
-                senderUserName = await _accountService.GetUserNameByConnectId(Context.ConnectionId);
+                string senderId = null;
+                string receiverId = null;
+                senderId = await _accountService.GetConnectIdAsync(sender);
+                receiverId = await _accountService.GetConnectIdAsync(receiver);
 
-                if (username != "ALL")
+                if (receiver != "广播聊天室")
                 {
-                    receiverConnectId = await _accountService.GetConnectIdAsync(username);
-                    await Clients.Client(receiverConnectId).SendAsync("ReceiveMessage", senderUserName, message, false);
+                    await Clients.Client(receiverId).SendAsync("ReceiveMessage",sender, receiver, message);
                 }
                 else
                 {
                     IReadOnlyList<string> sendIds = new List<string>()
-                {
-                    Context.ConnectionId
-                };
-                    await Clients.AllExcept(sendIds).SendAsync("ReceiveMessage", senderUserName, message, true);
+                    {
+                        senderId
+                    };
+                    await Clients.AllExcept(sendIds).SendAsync("ReceiveMessage", sender, receiver, message);
                 }
             }catch(ApplicationException e)
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SYSTEM", "对方以离线", false);
+                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SYSTEM", receiver,"对方以离线");
                 _logger.LogWarning($"SignalR获取connectId异常，异常信息{e.Message}");
             }
         }

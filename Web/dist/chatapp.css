@@ -155,7 +155,7 @@ ul li {
   /*margin-left: 40px;*/
   height: 100%;
 }
-.chatusers{
+.chatusers {
   /*width: 150px;*/
   /*margin-left: 40px;*/
   height: 100%;
@@ -171,7 +171,7 @@ ul li {
   width: 40%;
   margin-left: 3%;
 }
-.usersview{
+.usersview {
   float: left;
   height: 100%;
   width: 14%;
@@ -183,31 +183,33 @@ ul li {
   padding: 5px 10px 20px 10px;
   margin-bottom: 90px;
 }
-#footer .center{
+#footer .center {
   width: 250px;
   margin: 0px auto 0px auto;
 }
-#footer .center span{
+#footer .center span {
   display: inline-block;
   margin: 10px;
   color: gray;
 }
-#title_div{
+#title_div {
   padding: 10px 10px 10px 10px;
   height: 56.8px;
   color: rgb(23, 162, 184);
-  margin:20px 100px 20px 100px;
-  background-color: rgba(23, 162, 184,0.33);
+  margin: 20px 100px 20px 100px;
+  background-color: rgba(23, 162, 184, 0.33);
   border-radius: 5px;
   box-shadow: 0px 4px 24px #121212;
 }
-#title_div > b{
+#title_div > b {
   margin-left: 30px;
   font-size: 25px;
   float: left;
 }
-#title_div > span{
+#title_div > span {
   padding-top: 12px;
   float: right;
 }
 
+
+/*# sourceMappingURL=chatapp.css.map*/

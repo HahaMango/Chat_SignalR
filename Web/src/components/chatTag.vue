@@ -31,7 +31,7 @@ export default {
   },
   methods:{
       getRecordObject:function (value) {
-          var record = new ChatRecord(this.currentTab,value,null,true);
+          var record = new ChatRecord(this.loginuser,this.currentTab,value,null,true);
           this.$emit('sendrecord',record);
       }
   },

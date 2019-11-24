@@ -1,4 +1,5 @@
 const sr = require('@aspnet/signalr');
+import ChatRecord from "./ChatRecord.js";
 
 let connection = null;
 
@@ -10,10 +11,13 @@ export default {
         connection.onclose(callback);
     },
     RecevieCallBack: function (callback) {
-        connection.on("ReceiveMessage", callback);
+        connection.on("ReceiveMessage", function(sender,receiver, msg){
+            var record = new ChatRecord(sender,receiver,msg,new Date(),false);
+            callback(record);
+        });
     },
-    SendMsg : function(username,msg,successCallback){
-        connection.invoke("SendMessage",username,msg).then(successCallback);
+    SendMsg : function(chatRecord,successCallback){
+        connection.invoke("SendMessage",chatRecord.sender,chatRecord.receiver,chatRecord.message).then(successCallback);
     },
     UserUpdate:function(callback){
         connection.on("UserUpdate",callback);
@@ -21,6 +25,7 @@ export default {
     StartConnect: function (username ,successCallback) {
         connection.start().then(function () {
             connection.invoke("AssociatedConnectId",username).catch(function(err){
+                console.log(err);
                 return;
             });
             successCallback();
@@ -30,4 +35,6 @@ export default {
             return;
         });
     }
+
+    
 }

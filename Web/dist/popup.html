@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<head>
+    <title>callback</title>
+</head>
+<body>
+    <p>callback</p>
+    <script src="oidc-client.min.js"></script>
+    <script>
+        new Oidc.UserManager({userStore: new Oidc.WebStorageStateStore({ store: window.localStorage })}).signinRedirectCallback().then(function() {
+            window.location = "/";
+        }).catch(function(e) {
+            console.error(e);
+        });
+    </script>
+</body>
+</html>

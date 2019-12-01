@@ -12,7 +12,6 @@ namespace SignalRDemo.Srevice
         Task<IEnumerable<string>> AccountListAsync();
         Task<IEnumerable<string>> AccountListAsync(int page, int count);
         Task<string> GetConnectIdAsync(string username);
-        Task<string> GetUserNameByConnectId(string connectId);
         Task<int> Count();
     }
 }

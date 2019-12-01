@@ -4,13 +4,14 @@ using System.Threading.Tasks;
 using SignalRDemo.Srevice;
 using System.Collections.Generic;
 using System;
+using SignalRDemo.Model;
 
 namespace SignalRDemo.Hubs
 {
     /// <summary>
     /// 聊天Hub
     /// </summary>
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IFlashChatClient>
     {
         private readonly ILogger _logger = null;
 
@@ -28,30 +29,32 @@ namespace SignalRDemo.Hubs
         /// <param name="username"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        public async Task SendMessage(string sender,string receiver, string message)
+        public async Task SendMessage(ChatRecord chatRecord)
         {
             try
             {
-                string senderId = null;
-                string receiverId = null;
-                senderId = await _accountService.GetConnectIdAsync(sender);
-                receiverId = await _accountService.GetConnectIdAsync(receiver);
+                string sender = chatRecord.Sender;
+                string receiver = chatRecord.Receiver;
+                chatRecord.IsSend = false;
 
                 if (receiver != "广播聊天室")
                 {
-                    await Clients.Client(receiverId).SendAsync("ReceiveMessage",sender, receiver, message);
+                    string receiverId = await _accountService.GetConnectIdAsync(receiver);
+                    await Clients.Client(receiverId).ReceiveMessage(chatRecord);
                 }
                 else
                 {
-                    IReadOnlyList<string> sendIds = new List<string>()
-                    {
-                        senderId
-                    };
-                    await Clients.AllExcept(sendIds).SendAsync("ReceiveMessage", sender, receiver, message);
+                    await Clients.Others.ReceiveMessage(chatRecord);
                 }
             }catch(ApplicationException e)
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "SYSTEM", receiver,"对方以离线");
+                await Clients.Client(Context.ConnectionId).ReceiveMessage(new ChatRecord
+                {
+                    Sender = "SYSTEM",
+                    Receiver = chatRecord.Receiver,
+                    Message = "对方已离线",
+                    Date = chatRecord.Date
+                });
                 _logger.LogWarning($"SignalR获取connectId异常，异常信息{e.Message}");
             }
         }
@@ -61,7 +64,7 @@ namespace SignalRDemo.Hubs
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task AssociatedConnectId(string username)
+        public async Task Handshake(string username)
         {
             string connectId = Context.ConnectionId;
             if (username == null || connectId == null)
@@ -71,10 +74,12 @@ namespace SignalRDemo.Hubs
 
             if (await _accountService.AssociatedWithConnectIdAsync(username, connectId))
             {
+                await Clients.Caller.Handshake(1);
                 _logger.LogInformation(username + "：关联成功");
             }
             else
             {
+                await Clients.Caller.Handshake(-1);
                 _logger.LogError(username + "：关联失败");
             }
         }

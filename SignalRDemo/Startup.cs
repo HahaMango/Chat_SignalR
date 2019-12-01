@@ -26,7 +26,7 @@ namespace SignalRDemo
             {
                 //options.KnownProxies.Add(IPAddress.Parse("192.168.99.100"));
             });
-            services.AddMvcCore()
+            services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddCors(config =>

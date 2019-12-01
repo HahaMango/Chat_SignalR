@@ -1,11 +1,11 @@
 <template>
   <div class="recordblock">
-    <div :class="{isright : record.isSend}">
+    <div :class="{isright : record.IsSend}">
       <div>
-        <span class="sender" :class="{isright : record.isSend}">{{record.isSend ? sender : record.communicator}}</span>
+        <span class="sender" :class="{isright : record.IsSend}">{{record.Sender}}</span>
       </div>
-      <div class="recordcontext" :class="[record.isSend ? 'isright':'isleft']">
-        <span>{{record.message}}</span>
+      <div class="recordcontext" :class="[record.IsSend ? 'isright':'isleft']">
+        <span>{{record.Message}}</span>
       </div>
     </div>
   </div>
@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  props: ["record","sender"],
+  props: ["record","loginuser"],
   computed:{
   }
 };

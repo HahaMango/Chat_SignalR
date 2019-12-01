@@ -1,11 +1,17 @@
 //聊天记录类
+let count = 0;
+
 class ChatRecord {
     constructor(sender,receiver,message, date, isSend) {
-      this.sender = sender;
-      this.receiver = receiver;
-      this.message = message;
-      this.date = date;
-      this.isSend = isSend;
+      this.Sender = sender;
+      this.Receiver = receiver;
+      this.Message = message;
+      this.Date = date;
+      this.IsSend = isSend;
+    }
+
+    get Id(){
+      return count++;
     }
   }
 

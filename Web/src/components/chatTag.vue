@@ -14,7 +14,7 @@
         </button>
       </button>
     </div>
-    <chatview class="chat_view" :chatrecords="getrecord" :sendname="loginuser" v-on:sendmsg="getRecordObject"/>
+    <chatview class="chat_view" :chatrecords="getrecord" :loginuser="loginuser" v-on:sendmsg="getRecordObject"/>
   </div>
 </template>
 

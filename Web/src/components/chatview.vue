@@ -2,8 +2,8 @@
   <div>
     <div id="chatlist">
       <ul>
-        <li v-for="record in chatrecords" :key="record.date">
-          <chatitem :record="record" :sender="sendname" />
+        <li v-for="record in chatrecords" :key="record.Id">
+          <chatitem :record="record" :sender="loginuser" />
         </li>
       </ul>
     </div>
@@ -22,10 +22,11 @@ import chatitem from "./chatItem.vue";
 export default {
 data (){
     return {
-        message:null
+      recordKey : 1,
+      message:null
     }
   },
-  props: ["chatrecords", "sendname"],
+  props: ["chatrecords", "loginuser"],
   components: {
     chatitem
   },
@@ -36,6 +37,9 @@ data (){
           }
           this.$emit('sendmsg',this.message);
           this.message = '';
+      },
+      Inc:function(value){
+        return ++this.recordKey;
       }
   }
 };

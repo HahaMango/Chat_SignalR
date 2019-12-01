@@ -10,12 +10,9 @@ namespace SignalRDemo.Srevice
     {
         private readonly IDictionary<string, string> _userMapToId = null;
 
-        private readonly IDictionary<string, string> _idMapToUser = null;
-
         public AccountService()
         {
             _userMapToId = new ConcurrentDictionary<string, string>();
-            _idMapToUser = new ConcurrentDictionary<string, string>();
         }
 
         /// <summary>
@@ -70,12 +67,11 @@ namespace SignalRDemo.Srevice
         {
             return await Task.Run(() => 
             {
-                if (!_userMapToId.ContainsKey(username) || connectId == null)
+                if (connectId == null || username == null || !_userMapToId.ContainsKey(username) )
                 {
                     return false;
                 }
                 _userMapToId[username] = connectId;
-                _idMapToUser[connectId] = username;
                 return true;
             });
         }
@@ -116,11 +112,6 @@ namespace SignalRDemo.Srevice
             });
         }
 
-        public async Task<string> GetUserNameByConnectId(string connectId)
-        {
-            return await Task.Run(() => _idMapToUser[connectId]);
-        }
-
         /// <summary>
         /// 删除账号
         /// </summary>
@@ -134,7 +125,6 @@ namespace SignalRDemo.Srevice
                 {
                     string connectid = _userMapToId[username];
                     _userMapToId.Remove(username);
-                    _idMapToUser.Remove(connectid);
                     return true;
                 }
                 return false;

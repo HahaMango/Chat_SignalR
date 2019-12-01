@@ -102,6 +102,22 @@ export default {
           return;
         }
         p.currentRoute = window.location.hash;
+
+        signalr.Connect();
+        signalr.RecevieCallBack(p.RecevieEvent);
+        signalr.Handshake(function(code) {
+          if (code == 1) {
+            console.log("已经连接");
+          }else if(code == -1){
+            console.log("出现错误");
+            
+          }
+        });
+        signalr.OnClose(function() {
+          p.LogoutEvent(p.loginUser);
+          window.location.href = "/";
+        });
+        signalr.StartConnect(p.loginUser);
       };
     },
     appclose: function() {
@@ -117,32 +133,26 @@ export default {
         return;
       }
 
-      signalr.Connect();
-      signalr.RecevieCallBack(p.RecevieEvent);
-      signalr.OnClose(function() {
-        p.LogoutEvent(p.loginUser);
-        window.location.href = "/";
-      });
-      signalr.StartConnect(value, function() {
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("POST", "/api/login", true);
-        xmlhttp.setRequestHeader(
-          "Content-type",
-          "application/x-www-form-urlencoded"
-        );
-        xmlhttp.send("username=" + value);
-        xmlhttp.onreadystatechange = function() {
-          if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            p.loginUser = value;
-            window.location.href = "#chat";
-          }
-        };
-      });
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open("POST", "http://localhost:5000/api/login", true);
+      xmlhttp.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+      xmlhttp.send("username=" + value);
+      xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+          p.loginUser = value;
+          window.location.href = "#chat";
+        }else{
+          alert("登陆失败");
+        }
+      };
     },
 
     LogoutEvent: function(value) {
       var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open("POST", "/api/logout", false);
+      xmlhttp.open("POST", "http://localhost:5000/api/logout", false);
       xmlhttp.setRequestHeader(
         "Content-type",
         "application/x-www-form-urlencoded"
@@ -152,32 +162,32 @@ export default {
     },
     SendAllEvent: function(value) {
       signalr.SendMsg(value, function() {
-        value.date = new Date();
+        value.Date = new Date();
         p.follow["广播聊天室"].push(value);
       });
     },
     SendMessageEvent: function(value) {
       signalr.SendMsg(value, function() {
-        value.date = new Date();
-        p.userMap[value.receiver].push(value);
+        value.Date = new Date();
+        p.userMap[value.Receiver].push(value);
       });
     },
     RecevieEvent: function(chatRecord) {
       if (chatRecord == null) {
         return;
       }
-      if (chatRecord.sender == "SYSTEM") {
+      if (chatRecord.Sender == "SYSTEM") {
         window.alert(chatRecord.message);
         return;
       }
-      if (chatRecord.receiver == "广播聊天室") {
+      if (chatRecord.Receiver == "广播聊天室") {
         this.follow["广播聊天室"].push(chatRecord);
       } else {
-        var msglist = this.userMap[receiver];
+        var msglist = this.userMap[chatRecord.Sender];
         if (msglist != null) {
           msglist.push(chatRecord);
         } else if (msglist == null) {
-          this.$set(this.userMap, chatRecord.sender, [chatRecord]);
+          this.$set(this.userMap, chatRecord.Sender, [chatRecord]);
         }
       }
     },
@@ -201,7 +211,11 @@ export default {
     },
     GetUserList: function(page, count, resultCallBack) {
       var xmlhttp1 = new XMLHttpRequest();
-      xmlhttp1.open("GET", "/api/userlist/" + page + "/" + count, true);
+      xmlhttp1.open(
+        "GET",
+        "http://localhost:5000/api/userlist/" + page + "/" + count,
+        true
+      );
       xmlhttp1.send();
       xmlhttp1.onreadystatechange = function() {
         if (xmlhttp1.readyState == 4 && xmlhttp1.status == 200) {
